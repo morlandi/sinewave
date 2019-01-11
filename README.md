@@ -18,7 +18,7 @@ screenshot:
 
 ## Obiettivi
 
-Scopo del progetto è quello di esaminare alcuni possibili paradigmi di comunicazione fra dispositivi periferici e un server centrale, con particolare riferimento al protocollo PUB/SUB reso disponibile da Redis.
+L'esempio proposto ha lo scopo di esaminare alcuni possibili paradigmi di comunicazione fra dispositivi periferici e un server centrale, con particolare riferimento al protocollo PUB/SUB reso disponibile da Redis.
 
 L'invio di informazioni da parte del dispositivo può essere concretizzato sia utilizzando una delle tante librerie client disponibili (Python o altri linguaggi), sia mediante una funzione "publish" minimale (per es. scritta in C); questa seconda opzione può essere convenientemente utilizzata in contesti limitati quali Arduino o altre schede embedded.
 
