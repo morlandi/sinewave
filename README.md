@@ -119,7 +119,7 @@ polling con una trasmissione "push"
 | Web Sockets     | PUB/SUB   |
 |-----------------|-----------|
 | open socket     | subscribe |
-| write to socket | Destra    |
+| write to socket | publish   |
 
 
 Sfortunatamente la pagina web non ha modo di fare direttamente il subscribe di un canale PUB/SUB, ma possiamo facilmente realizzare un "bridge" fra i due mondi realizzando lato server un processo che si incarica del subscribe e distribuisce
