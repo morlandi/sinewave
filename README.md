@@ -16,15 +16,13 @@ screenshot:
 
 
 
-## Obiettivi
+## Introduzione
 
-L'esempio proposto ha lo scopo di esaminare alcuni possibili paradigmi di comunicazione fra dispositivi periferici e un server centrale, con particolare riferimento al protocollo PUB/SUB reso disponibile da Redis.
+L'esempio proposto ha lo scopo di esaminare alcuni possibili paradigmi di comunicazione fra dispositivi periferici e un server centrale, con particolare riferimento al protocollo PUB/SUB reso disponibile da `Redis`.
 
 L'invio di informazioni da parte del dispositivo può essere concretizzato sia utilizzando una delle tante librerie client disponibili (Python o altri linguaggi), sia mediante una funzione "publish" minimale (per es. scritta in C); questa seconda opzione può essere convenientemente utilizzata in contesti limitati quali Arduino o altre schede embedded.
 
-Le informazioni ricevute sul server possono essere ulteriormente propagate ad eventuali clients web che avessero manifestato il proprio interesse.
- 
-Allo scopo è necessario predisporre sul server  un processo "bridge" incaricato di raccogliere i dati come subscriber, per poi eseguirne il broadcast via WebSocket; l'esempio proposto illustra una semplice implementazione basata su `django-channels`.
+Le informazioni ricevute sul server possono essere ulteriormente propagate ad eventuali clients web che avessero manifestato il proprio interesse, predisponendo sul server un processo "listener" incaricato di raccogliere i dati come subscriber, per poi eseguirne il broadcast via WebSocket; l'esempio proposto illustra una semplice implementazione basata su `django-channels`.
 
 
 ## Alcuni schemi tradizionali di comunicazione
