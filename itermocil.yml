@@ -1,13 +1,13 @@
 windows:
-  - name: nexterbox3
+  - name: sinewave
     root: ~/src2/github_public/sinewave
     layout: tiled
     panes:
       - commands:
-        - workon nexterbox3
+        - workon sinewave
         - python sinewave_publisher.py -s 100
         name: 'sinewave_publisher'
       - commands:
-        - workon nexterbox3
+        - workon sinewave
         - python sinewave_listener.py
         name: 'sinewave_listener'
