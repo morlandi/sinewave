@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,5 +13,25 @@
   <body>
         {% block content %}
         {% endblock content %}
+
+        {% block js %}
+            <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+            <script src="{% static 'js/moment.min.js' %}"></script>
+            <script src="{% static 'js/Chart.min.js' %}"></script>
+            <script src="{% static 'js/hammer.min.js' %}"></script>
+            <script src="{% static 'js/chartjs-plugin-zoom.min.js' %}"></script>
+            <script src="{% static 'js/chartjs-plugin-streaming.min.js' %}"></script>
+        {% endblock js %}
+
+        {% block extrajs %}
+            {% comment %}
+            <script type="text/javascript" src="{% static 'js/my_project.js' %}"></script>
+            <script language="javascript">
+                $( document ).ready(function() {
+                });
+            </script>
+            {% endcomment %}
+        {% endblock extrajs %}
+
   </body>
 </html>

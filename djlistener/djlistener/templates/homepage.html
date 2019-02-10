@@ -2,5 +2,118 @@
 
 
 {% block content %}
-<h1>hello</h1>
+    <div style="max-width: 800px;">
+        <canvas id="chart1" height="150"></canvas>
+    </div>
 {% endblock content %}
+
+
+{% block extrajs %}
+    {{ block.super }}
+
+    <script language="javascript">
+
+        var chart1 = null;
+
+        function build_chart(canvas, configuration) {
+            var ctx = $(canvas).get(0).getContext("2d");
+            var chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        data: [],
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)'
+                    }, {
+                        data: [],
+                        borderColor: 'rgba(255,99,132,1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)'
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'realtime',       // x axis will auto-scroll from right to left
+                            realtime: {             // per-axis options
+                                duration: 20000,    // data in the past 20000 ms will be displayed
+                                delay: 2000,        // delay of 1000 ms, so upcoming values are known before plotting a line
+                                pause: false,       // chart is not paused
+                                ttl: undefined      // data will be automatically deleted as it disappears off the chart
+                            }
+                        }]
+                    },
+                    plugins: {
+                        streaming: {            // per-chart option
+                            frameRate: 30       // chart is drawn 30 times every second
+                        }
+                    },
+
+                    // Optional panning and zooming;
+                    // requires https://github.com/chartjs/chartjs-plugin-zoom
+
+                    // Assume x axis is the realtime scale
+                    pan: {
+                        enabled: true,    // Enable panning
+                        mode: 'x',        // Allow panning in the x direction
+                        rangeMin: {
+                            x: null       // Min value of the delay option
+                        },
+                        rangeMax: {
+                            x: null       // Max value of the delay option
+                        }
+                    },
+                    zoom: {
+                        enabled: true,    // Enable zooming
+                        mode: 'x',        // Allow zooming in the x direction
+                        rangeMin: {
+                            x: null       // Min value of the duration option
+                        },
+                        rangeMax: {
+                            x: null       // Max value of the duration option
+                        }
+                    }
+
+                }
+            });
+            return chart;
+        }
+
+        // your event listener code - assuming the event object has the timestamp and value properties
+        // See: https://github.com/nagix/chartjs-plugin-streaming#push-model-listening-based
+        function onReceive(event) {
+            // append the new data to the existing chart data
+            // chart1.data.datasets[0].data.push({
+            //     x: event.timestamp,
+            //     y: event.value
+            // });
+
+            chart1.data.datasets.forEach(function(dataset, index) {
+                dataset.data.push({
+                    x: event.timestamp,
+                    y: event.value * (1.0 + index)
+                });
+            });
+
+            // update chart datasets keeping the current animation
+            chart1.update({
+                preservation: true
+            });
+        };
+
+        $( document ).ready(function() {
+            chart1 = build_chart("#chart1");
+            setInterval(function() {
+                var event = {
+                    timestamp: new Date(),
+                    value: Math.random()
+                };
+                console.log('event: %o', event);
+                onReceive(event);
+            }, 500);
+        });
+    </script>
+
+{% endblock extrajs %}
