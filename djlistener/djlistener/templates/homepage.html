@@ -11,6 +11,39 @@
 {% block extrajs %}
     {{ block.super }}
 
+    {# Websockets #}
+    <script language="javascript">
+
+        var ws_url =
+            window.location.protocol == 'https:' ? 'wss:/' : 'ws://' +
+            window.location.host +
+            '/ws/sinewave/';
+
+        var sinewaveSocket = new ReconnectingWebSocket(ws_url);
+        //var sinewaveSocket = new WebSocket(ws_url);
+
+        sinewaveSocket.onopen = function(event) {
+            console.log('sinewaveSocket.onopen()', event);
+        };
+
+        sinewaveSocket.onmessage = function(event) {
+            console.log('sinewaveSocket.onmessage()', event);
+            var data = JSON.parse(event.data);
+            console.log('data', data);
+            onChartReceive(data);
+        };
+
+        sinewaveSocket.onerror = function(e) {
+            console.log('sinewaveSocket.onerror()', event);
+        };
+
+        sinewaveSocket.onclose = function(e) {
+            console.log('sinewaveSocket.onclose()', event);
+        };
+
+    </script>
+
+    {# Charting #}
     <script language="javascript">
 
         var chart1 = null;
@@ -22,10 +55,12 @@
                 data: {
                     datasets: [{
                         data: [],
+                        fill: false,
                         borderColor: 'rgb(54, 162, 235)',
                         backgroundColor: 'rgba(54, 162, 235, 0.5)'
                     }, {
                         data: [],
+                        fill: false,
                         borderColor: 'rgba(255,99,132,1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)'
                     }]
@@ -39,7 +74,7 @@
                             type: 'realtime',       // x axis will auto-scroll from right to left
                             realtime: {             // per-axis options
                                 duration: 20000,    // data in the past 20000 ms will be displayed
-                                delay: 2000,        // delay of 1000 ms, so upcoming values are known before plotting a line
+                                delay: 0,        // delay of 1000 ms, so upcoming values are known before plotting a line
                                 pause: false,       // chart is not paused
                                 ttl: undefined      // data will be automatically deleted as it disappears off the chart
                             }
@@ -47,7 +82,7 @@
                     },
                     plugins: {
                         streaming: {            // per-chart option
-                            frameRate: 30       // chart is drawn 30 times every second
+                            frameRate: 300       // chart is drawn 30 times every second
                         }
                     },
 
@@ -83,36 +118,42 @@
 
         // your event listener code - assuming the event object has the timestamp and value properties
         // See: https://github.com/nagix/chartjs-plugin-streaming#push-model-listening-based
-        function onReceive(event) {
+        function onChartReceive(event) {
             // append the new data to the existing chart data
             // chart1.data.datasets[0].data.push({
             //     x: event.timestamp,
             //     y: event.value
             // });
 
-            chart1.data.datasets.forEach(function(dataset, index) {
-                dataset.data.push({
-                    x: event.timestamp,
-                    y: event.value * (1.0 + index)
+            if (chart1) {
+                chart1.data.datasets.forEach(function(dataset, index) {
+                    dataset.data.push({
+                        x: event.timestamp,
+                        y: event.values[index]
+                    });
                 });
-            });
 
-            // update chart datasets keeping the current animation
-            chart1.update({
-                preservation: true
-            });
+                // update chart datasets keeping the current animation
+                chart1.update({
+                    preservation: true
+                });
+            }
         };
 
         $( document ).ready(function() {
             chart1 = build_chart("#chart1");
-            setInterval(function() {
-                var event = {
-                    timestamp: new Date(),
-                    value: Math.random()
-                };
-                console.log('event: %o', event);
-                onReceive(event);
-            }, 500);
+            var frequency = 0;
+
+            if (frequency) {
+                setInterval(function() {
+                    var event = {
+                        timestamp: new Date(),
+                        values: [Math.random(), Math.random()]
+                    };
+                    console.log('event: %o', event);
+                    onChartReceive(event);
+                }, frequency);
+            }
         });
     </script>
 

@@ -17,3 +17,15 @@ def get_redis_connection():
     # return rdb
 
     return redis.Redis(connection_pool=REDIS_CONNECTION_POOL)
+
+
+def trace(*args):
+    colorize = True
+    text = ''
+    if colorize:
+        text += '\x1b[1;33;40m'
+    text += ', '.join([str(arg) for arg in args])
+    if colorize:
+        text += '\x1b[0m'
+    print(text)
+
