@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '171$o7z&zwqhet96y-6#mhjytqn3=-nv%s!^b13jam1a^)y@g#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+#DEBUG = True
 DEBUG = False
-
-ALLOWED_HOSTS = ['*', ]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -149,3 +149,10 @@ CHANNEL_LAYERS = {
         },
     },
 }
+
+try:
+    from .local_settings import *
+    print('Using local settings from file "local_settings.py"')
+except ModuleNotFoundError:
+    pass
+
