@@ -34,7 +34,7 @@ def loop(dt):
 
             n += 1
 
-        except redis.exceptions.ConnectionError:
+        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
             print('Lost connections to redis.')
             connection = connect()
         except Exception as e:
