@@ -18,7 +18,7 @@ def main():
         description='Receive whatever is published on redis "sinewave" channel'
     )
     parser.add_argument('--connection-string', '-c', type=str, default='redis://localhost:6379/0',
-        help='redis connection string; example: "redis://[:password]127.0.0.1:6379/0"')
+        help='redis connection string; example: "redis://[:password@]127.0.0.1:6379/0"')
     args = parser.parse_args()
 
     REDIS_URL = os.environ.get(
