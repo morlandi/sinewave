@@ -1,34 +1,24 @@
-import math, time
+import math
+import time
 import redis
-import argparse
-import logging
+import os
 
-
-def publish(sleep_time):
-
-    r = redis.StrictRedis(host='localhost', port=6379, db=0)
-    dt = float(sleep_time) / 1000.0
-
-    for n in range(0, 100000):
-        row = (62 * 'X')[0:32 + int(30 * math.sin(n / 8))]
-        r.publish('sinewave', row)
-        #print(row)
-        print('\x1b[1;36;40m' + row + '\x1b[0m')
-        #time.sleep(0.01)
-        time.sleep(dt)
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 
 def main():
 
-    parser = argparse.ArgumentParser(
-        description='Publish a sinewave on redis "sinewave" channel'
-    )
-    parser.add_argument('--sleep_time', '-s', type=int, default=10, help="expressed in [ms]; default = 10")
-    args = parser.parse_args()
-
+    connection = redis.StrictRedis.from_url(REDIS_URL)
+    n = 1
     while True:
-        publish(args.sleep_time)
 
+        row = (62 * 'X')[0:32 + int(30 * math.sin(n / 8))]
+        print('\x1b[1;36;40m' + row + '\x1b[0m')
+
+        connection.publish('sinewave', row)
+
+        n += 1
+        time.sleep(0.05)
 
 if __name__ == "__main__":
     main()
