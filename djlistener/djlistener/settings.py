@@ -130,10 +130,13 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-#REDIS_URL = 'redis://localhost:6379/0'
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
-redis_port = 6379
-REDIS_URL = 'redis://%s:%d/0' % (redis_host, redis_port)
+#
+# REDIS_URL
+#
+
+#redis://arbitrary_usrname:password@ipaddress:6379/0
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+
 
 #
 # Channel layer definitions
@@ -145,7 +148,7 @@ CHANNEL_LAYERS = {
         # This example app uses the Redis channel layer implementation channels_redis
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [(redis_host, redis_port)],
+            "hosts": [REDIS_URL, ],
         },
     },
 }
