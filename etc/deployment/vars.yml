@@ -39,4 +39,4 @@ project:
     supervised_services:
         -
             - "{{project_instance}}_asgi_server"
-            - "{{project_instance}}_publisherr"
+            - "{{project_instance}}_publisher"
