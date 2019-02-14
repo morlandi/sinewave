@@ -9,7 +9,7 @@ REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 def connect():
     while True:
-        print('Trying to connect to redis ...')
+        print('Trying to connect to redis at "%s" ...' % REDIS_URL)
         try:
             connection = redis.StrictRedis.from_url(REDIS_URL)
             connection.ping()
