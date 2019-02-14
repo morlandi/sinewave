@@ -4,6 +4,19 @@ import math
 import redis
 import argparse
 
+#
+#    NOTE FOR REDIS CONNECTION
+#    If redis connection requires a password, proceed as follows:
+#
+#    1) edit `/etc/environment` to add "REDIS_URL=redis://:<password>@127.0.0.1:6379/0"
+#    2) if this script is execute via supervisor, instruct it to load `/etc/environment`;
+#       for example (with systemd):
+#
+#        $ systemctl edit --full supervisor.service
+#            [Service]
+#            EnvironmentFile=/etc/environment
+#
+
 REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
 

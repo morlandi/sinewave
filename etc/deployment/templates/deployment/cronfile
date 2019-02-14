@@ -1,0 +1,4 @@
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+#0 * * * *  {{username}}    timeout 50m {{project.pythonpath}}/python {{project.website_home}}/manage.py mycommand >> {{project.logto}}/mycommand.log 2>&1
+

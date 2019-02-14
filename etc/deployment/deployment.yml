@@ -1,0 +1,233 @@
+
+- hosts: servers
+  gather_facts: True
+  vars_files:
+      - vars.yml
+
+
+  #
+  # Tasks
+  #
+
+  tasks:
+
+      - name: Show ansible version
+        debug:
+            msg: "ansible_version: {{ansible_version.major}}"
+
+      - name: Check ansible version
+        fail:
+            msg: "This playbook requires Ansible 2.x or greater."
+        when: ansible_version.major < 2
+
+      #
+      # Packages
+      #
+
+      - name: Install required project packages.
+        become: true
+        apt:
+            pkg: "{{project_packages}}"
+            state: present
+            update_cache: "{{apt_update_cache}}"
+
+      #
+      # User
+      #
+
+      - name: Add group
+        become: true
+        group:
+            name: "{{usergroup}}"
+
+      - name: Add user
+        become: true
+        user:
+            name: "{{username}}"
+            group: "{{usergroup}}"
+            home: "{{home}}"
+            shell: /bin/bash
+            generate_ssh_key: no
+            state: present
+            #password: "{{user_password}}"
+
+      - name: Create standard folders
+        become: true
+        file:
+            path: "{{item}}"
+            state: directory
+            owner: "{{username}}"
+            group: "{{usergroup}}"
+        with_items:
+          - "{{home}}/logs"
+          - "{{home}}/run"
+          - "{{home}}/public"
+          - "{{home}}/public/static"
+
+      - name: Create project folder with restricted permissions
+        become: true
+        file:
+            path: "{{item}}"
+            state: directory
+            owner: "{{username}}"
+            group: "{{usergroup}}"
+            mode: 0750
+        with_items:
+          - "{{home}}/{{project_name}}"
+
+      #
+      # Project
+      #
+
+      - name: Pull sources from the repository.
+        become: true
+        become_user: "{{username}}"
+        git:
+            repo: "{{project.repo}}"
+            dest: "{{home}}/sinewave"
+            version: "{{version}}"
+            accept_hostkey: True
+            force: True
+        notify:
+            - Restart Nginx
+            - Restart supervised services
+
+      - name: Remove pyc files
+        become: true
+        become_user: "{{username}}"
+        command: find . \( -name \*.pyc -o -name \*.pyo -o -name __pycache__ \) -prune -exec rm -rf {} +
+        args:
+          chdir: "{{project.website_home}}"
+
+      - name: Create default settings file
+        become: true
+        become_user: "{{username}}"
+        template:
+            src: deployment/local_settings.py
+            dest: "{{project.website_home}}/djlistener/local_settings.py"
+            force: False
+
+      - name: Create "setenv" script
+        become: true
+        become_user: "{{username}}"
+        template:
+            src: deployment/setenv.bash
+            dest: "{{project.root}}"
+
+      - name: Check if virtualenv exists
+        stat:
+            path: "{{project.virtualenv}}/bin/python3"
+        register: python3_executable
+
+      - name: Create the virtualenv
+        become: true
+        become_user: "{{username}}"
+        command: python3 -m venv ./python
+        args:
+            chdir: "{{project.root}}"
+        when: python3_executable.stat.exists == False
+
+      - name: Upgrade the virtualenv
+        become: true
+        become_user: "{{username}}"
+        pip:
+            virtualenv={{project.virtualenv}}
+            requirements={{project.website_home}}/requirements.txt
+        #ignore_errors: yes
+
+      - name: Run django management commands
+        become: true
+        become_user: "{{username}}"
+        django_manage:
+            command: "{{item}}"
+            app_path: "{{project.website_home}}"
+            settings: "{{project_name}}.settings"
+            virtualenv: "{{project.virtualenv}}"
+            pythonpath: "{{project.pythonpath}}"
+        with_items:
+            "{{project.management_commands}}"
+
+      - name: Install Nginx configuration file
+        become: true
+        template:
+            src: deployment/nginx.conf
+            dest: /etc/nginx/sites-available/{{project_instance}}.conf
+        notify:
+            - Restart Nginx
+
+      - name: Enable Nginx configuration file
+        become: true
+        file:
+            src: /etc/nginx/sites-available/{{project_instance}}.conf
+            dest: /etc/nginx/sites-enabled/{{project_instance}}.conf
+            state: link
+        notify:
+            - Restart Nginx
+
+      - name: Create Supervisord configuration file
+        become: true
+        template:
+            src: deployment/supervisor.conf
+            dest: /etc/supervisor/conf.d/{{project_instance}}.conf
+        notify:
+          - Add supervised services
+          - Restart Nginx
+        tags: test
+
+      - name: Create logrotate configuration file
+        become: true
+        template:
+            src: deployment/logrotate.conf
+            dest: "/etc/logrotate.d/{{project_instance}}"
+
+      - name: Schedule crontab script
+        become: true
+        template:
+            src: deployment/cronfile
+            dest: "/etc/cron.d/{{project_instance}}"
+            force: yes
+
+  #
+  # Handlers
+  #
+
+  handlers:
+
+      - name: Restart Nginx
+        become: true
+        service:
+            name: nginx
+            state: restarted
+
+      - name: Reload Nginx
+        become: true
+        service:
+            name: nginx
+            state: reloaded
+
+      - name: Restart Redis
+        become: true
+        service:
+            name: redis-server
+            state: restarted
+
+      - name: Add supervised services
+        become: true
+        supervisorctl:
+            name: "{{item}}"
+            state: present
+        with_items:
+            "{{project.supervised_services}}"
+        notify:
+            - Restart supervised services
+
+      # When state = restarted,
+      #     the module will call supervisorctl update then call supervisorctl restart.
+      #
+      - name: Restart supervised services
+        become: true
+        supervisorctl:
+            name: "{{item}}"
+            state: restarted
+        with_items:
+            "{{project.supervised_services}}"

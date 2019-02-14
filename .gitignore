@@ -2,3 +2,5 @@
 *.py[cod]
 __pycache__
 djlistener/djlistener/local_settings.py
+etc/deployment/provisioning.retry
+etc/deployment/deployment.retry

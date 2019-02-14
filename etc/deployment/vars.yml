@@ -1,0 +1,42 @@
+usergroup: '{{username}}'
+home: '/home/{{username}}'
+project_name: "djlistener"
+project_instance: "{{username}}"
+locale: en_US.UTF-8
+
+#
+# Provisioning variables
+#
+
+
+system_packages:
+    - unzip
+    - git
+
+project_packages:
+    - python-pip
+    - python3-venv
+    - python3-dev
+
+#
+# Deployment variables
+#
+
+project:
+    root: "{{home}}"
+    website_home: "{{home}}/sinewave/{{project_name}}"
+    repo: https://github.com/morlandi/sinewave.git
+    virtualenv: "{{home}}/python"
+    pythonpath: "{{home}}/python/bin"
+    static_root: "{{home}}/public/static"
+    socketpath: "{{home}}/run"
+    logto: "{{home}}/logs"
+
+    management_commands:
+        -
+            - collectstatic
+
+    supervised_services:
+        -
+            - "{{project_instance}}_asgi_server"
+            - "{{project_instance}}_publisherr"

@@ -1,0 +1,5 @@
+[servers:children]
+production
+
+[production]
+sinewave.brainstorm.it          username=sinewave       standalone_host=True
