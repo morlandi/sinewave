@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-import os
-import sys
-import signal
 import redis
-import argparse
+import signal
+import sys
 
 
-def receive(connection):
+def receive(connection, channel):
 
     pubsub = connection.pubsub()
-    pubsub.subscribe('sinewave')
+    pubsub.subscribe(channel)
 
     for item in pubsub.listen():
         if item['type'] == 'message':
@@ -17,21 +15,10 @@ def receive(connection):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Receive whatever is published on redis "sinewave" channel'
-    )
-    parser.add_argument('--connection-string', '-c', type=str, default='redis://localhost:6379/0',
-        help='redis connection string; example: "redis://[:password@]127.0.0.1:6379/0"')
-    args = parser.parse_args()
-
-    REDIS_URL = os.environ.get(
-        'REDIS_URL',
-        args.connection_string
-    )
-    print('Listening to "%s" ...' % REDIS_URL)
-
-    connection = redis.StrictRedis.from_url(REDIS_URL, decode_responses=True)
-    receive(connection)
+    redis_url = 'redis://localhost:6379/0'
+    print('Listening to "%s" ...' % redis_url)
+    connection = redis.StrictRedis.from_url(redis_url, decode_responses=True)
+    receive(connection, "sinewave")
 
 
 if __name__ == "__main__":

@@ -1,58 +1,63 @@
+#!/usr/bin/env python3
+import argparse
+import os
 import redis
-import channels.layers
-from asgiref.sync import async_to_sync
-from django.conf import settings
-
-CHANNELS_DEVICE_BROADCAST_GROUP = 'ggg'
+import signal
+import sys
+import time
 
 
-def main():
-    r = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
+def receive(connection, channel):
 
-    pubsub = r.pubsub()
-    pubsub.subscribe('sinewave')
+    pubsub = connection.pubsub()
+    pubsub.subscribe(channel)
 
     for item in pubsub.listen():
         if item['type'] == 'message':
             print(item['data'])
-            broadcast_message(item['data'])
 
 
-def broadcast_message(data):
-
-    # Example:
-    # > publish acqvel_broadcast '{"device_channel": "process", "device_type": "devicetest_event", "event": "start", "step": 1, "progress": 10}'
-
-    #self.logger.log(logging.INFO, 'Broadcast process message: %s' % json.dumps(data))
-
-    # Broadcast process message to subscribers
-    channel_layer = channels.layers.get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-        CHANNELS_DEVICE_BROADCAST_GROUP, {
-            "type": 'process_notification',
-            "content": data,
-        })
+def connect(redis_url):
+    while True:
+        print('Trying to connect to redis at "%s" ...' % redis_url)
+        try:
+            connection = redis.StrictRedis.from_url(redis_url, decode_responses=True)
+            connection.ping()
+        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
+            time.sleep(1)
+        else:
+            break
+    print('Connected to redis at "%s".' % redis_url)
+    return connection
 
 
-# https://medium.com/@johngrant/django-channels-talking-to-channels-from-my-non-django-application-7dec7ceb80a8
+def main():
 
-# https://hk.saowen.com/a/5572efaa13a5fd39bb5d1d030f89df9e943e32a30e7559ad4ee6f69ddc4c87aa
+    # Parse arguments
+    parser = argparse.ArgumentParser(description='Receive whatever is published on specified redis channel')
+    parser.add_argument('-r', '--redis-url', help='Example: "redis://[:password@]127.0.0.1:6379/0"')
+    parser.add_argument('-c', '--channel', default='sinewave')
+    args = parser.parse_args()
 
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [('localhost', 6379)],
-        },
-    },
-}
+    # Retrieve redis_url for connection
+    if args.redis_url:
+        redis_url = args.redis_url
+    else:
+        redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    print('Listening to "%s" ...' % redis_url)
+
+    # Listen for any message from specified channel§
+    while True:
+        try:
+            connection = connect(redis_url)
+            receive(connection, args.channel)
+        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
+            print('Lost connections to redis.')
+        except Exception as e:
+            print(str(e))
+            time.sleep(1)
 
 
 if __name__ == "__main__":
-
-    if not settings.configured:
-        settings.configure({
-            'CHANNEL_LAYERS': CHANNEL_LAYERS,
-        }, DEBUG=True)
-
+    signal.signal(signal.SIGINT, lambda signum, frame: sys.exit(0))
     main()

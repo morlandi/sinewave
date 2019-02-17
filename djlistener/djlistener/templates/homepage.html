@@ -74,7 +74,7 @@
                             type: 'realtime',       // x axis will auto-scroll from right to left
                             realtime: {             // per-axis options
                                 duration: 20000,    // data in the past 20000 ms will be displayed
-                                delay: 0,        // delay of 1000 ms, so upcoming values are known before plotting a line
+                                delay: 1000,        // delay of 1000 ms, so upcoming values are known before plotting a line
                                 pause: false,       // chart is not paused
                                 ttl: undefined      // data will be automatically deleted as it disappears off the chart
                             }
@@ -120,11 +120,6 @@
         // See: https://github.com/nagix/chartjs-plugin-streaming#push-model-listening-based
         function onChartReceive(event) {
             // append the new data to the existing chart data
-            // chart1.data.datasets[0].data.push({
-            //     x: event.timestamp,
-            //     y: event.value
-            // });
-
             if (chart1) {
                 chart1.data.datasets.forEach(function(dataset, index) {
                     dataset.data.push({

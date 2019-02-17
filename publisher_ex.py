@@ -20,26 +20,24 @@ import time
 #            EnvironmentFile=/etc/environment
 #
 
-REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
-
-def connect():
+def connect(redis_url):
     while True:
-        print('Trying to connect to redis at "%s" ...' % REDIS_URL)
+        print('Trying to connect to redis at "%s" ...' % redis_url)
         try:
-            connection = redis.StrictRedis.from_url(REDIS_URL)
+            connection = redis.StrictRedis.from_url(redis_url)
             connection.ping()
         except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
             time.sleep(1)
         else:
             break
-    print('Connected to redis.')
+    print('Connected to redis at "%s".' % redis_url)
     return connection
 
 
-def loop(dt):
+def loop(dt, redis_url, channel):
     n = 0
-    connection = connect()
+    connection = connect(redis_url)
     while True:
 
         try:
@@ -47,13 +45,13 @@ def loop(dt):
             row = 'X' * value
             print('\x1b[1;36;40m' + row + '\x1b[0m')
 
-            connection.publish('sinewave', row)
+            connection.publish(channel, row)
 
             n += 1
 
         except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
             print('Lost connections to redis.')
-            connection = connect()
+            connection = connect(redis_url)
         except Exception as e:
             print(str(e))
             time.sleep(1)
@@ -62,14 +60,23 @@ def loop(dt):
 
 
 def main():
-    signal.signal(signal.SIGINT, lambda x, y: sys.exit(0))
-    parser = argparse.ArgumentParser(
-        description='Publish a sinewave on redis "sinewave" channel'
-    )
-    parser.add_argument('--sleep_time', '-s', type=int, default=50, help="expressed in [ms]; default = 10")
+
+    # Parse arguments
+    parser = argparse.ArgumentParser(description='Publish a sinewave on specified redis channel')
+    parser.add_argument('-r', '--redis-url', help='Example: "redis://[:password@]127.0.0.1:6379/0"')
+    parser.add_argument('-c', '--channel', default='sinewave')
+    parser.add_argument('-s', '--sleep_time', type=int, default=100, help="expressed in [ms]; default = 10")
     args = parser.parse_args()
-    loop(float(args.sleep_time) / 1000.0)
+
+    # Retrieve redis_url for connection
+    if args.redis_url:
+        redis_url = args.redis_url
+    else:
+        redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+
+    loop(float(args.sleep_time) / 1000.0, redis_url, args.channel)
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, lambda signum, frame: sys.exit(0))
     main()
