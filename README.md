@@ -108,7 +108,7 @@ Gli svantaggi di questo approccio sono quelli tipici di un sistema di polling:
 In alternativa, possiamo utilizzare il protocollo WebSocket per sostituire il
 polling con una trasmissione "push"
 
-- la pagina web apre un web socket, manifestando il proprio interesse a ricevere
+- la pagina web apre un WebSocket, manifestando il proprio interesse a ricevere
   l'informazione
 - il server inoltra le informazioni ai client in ascolto quando disponibili
 
@@ -116,8 +116,8 @@ polling con una trasmissione "push"
 
 | Web Sockets     | PUB/SUB   |
 |-----------------|-----------|
-| open socket     | subscribe |
-| write to socket | publish   |
+| open            | subscribe |
+| write           | publish   |
 
 
 Sfortunatamente la pagina web non ha modo di fare direttamente il subscribe di un canale PUB/SUB, ma possiamo facilmente realizzare un "bridge" fra i due mondi realizzando lato server un processo che si incarica del subscribe e distribuisce

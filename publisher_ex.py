@@ -1,8 +1,11 @@
-import os
-import time
-import math
-import redis
+#!/usr/bin/env python3
 import argparse
+import math
+import os
+import redis
+import signal
+import sys
+import time
 
 #
 #    NOTE FOR REDIS CONNECTION
@@ -40,7 +43,8 @@ def loop(dt):
     while True:
 
         try:
-            row = (62 * 'X')[0:32 + int(30 * math.sin(n / 8))]
+            value = 30 + int(30 * math.sin(n / 4))
+            row = 'X' * value
             print('\x1b[1;36;40m' + row + '\x1b[0m')
 
             connection.publish('sinewave', row)
@@ -58,7 +62,7 @@ def loop(dt):
 
 
 def main():
-
+    signal.signal(signal.SIGINT, lambda x, y: sys.exit(0))
     parser = argparse.ArgumentParser(
         description='Publish a sinewave on redis "sinewave" channel'
     )

@@ -1,13 +1,30 @@
 windows:
-  - name: sinewave
+  - name: listeners
     root: ~/src2/github_public/sinewave
+    layout: tiled
+    panes:
+      - name: 'listener (1)'
+        commands:
+        - workon sinewave
+        - python sinewave_listener.py
+      - name: 'listener (2)'
+        commands:
+        - workon sinewave
+        - python sinewave_listener.py
+  - name: djlistener
+    root: ~/src2/github_public/sinewave/djlistener
     layout: tiled
     panes:
       - commands:
         - workon sinewave
-        - python sinewave_publisher.py -s 100
-        name: 'sinewave_publisher'
-      - commands:
+        - python manage.py runserver
+  - name: publisher
+    root: ~/src2/github_public/sinewave
+    layout: tiled
+    focus: true
+    panes:
+      - name: 'sinewave_publisher'
+        focus: true
+        commands:
         - workon sinewave
-        - python sinewave_listener.py
-        name: 'sinewave_listener'
+        - python sinewave_publisher.py

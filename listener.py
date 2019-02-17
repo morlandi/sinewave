@@ -1,4 +1,7 @@
+#!/usr/bin/env python3
 import os
+import sys
+import signal
 import redis
 import argparse
 
@@ -32,4 +35,5 @@ def main():
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, lambda signum, frame: sys.exit(0))
     main()

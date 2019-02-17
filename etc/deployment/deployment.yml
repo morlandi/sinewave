@@ -211,19 +211,19 @@
             name: redis-server
             state: restarted
 
+      # When state = present,
+      #     the module will call supervisorctl reread then supervisorctl add if the program/group does not exist
       - name: Add supervised services
         become: true
-        supervisorctl:
-            name: "{{item}}"
-            state: present
-        with_items:
-            "{{project.supervised_services}}"
+        # supervisorctl:
+        #     name: "{{project.supervised_services}}"
+        #     state: present
+        command: supervisorctl reread
         notify:
             - Restart supervised services
 
       # When state = restarted,
       #     the module will call supervisorctl update then call supervisorctl restart.
-      #
       - name: Restart supervised services
         become: true
         supervisorctl:
