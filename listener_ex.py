@@ -23,7 +23,8 @@ def connect(redis_url):
         try:
             connection = redis.StrictRedis.from_url(redis_url, decode_responses=True)
             connection.ping()
-        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
+        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError) as e:
+            print(str(e))
             time.sleep(1)
         else:
             break
