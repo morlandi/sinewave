@@ -153,6 +153,7 @@
             src: deployment/nginx.conf
             dest: /etc/nginx/sites-available/{{project_instance}}.conf
         notify:
+            - Apply Certbot
             - Restart Nginx
 
       - name: Enable Nginx configuration file
@@ -231,3 +232,6 @@
             state: restarted
         with_items:
             "{{project.supervised_services}}"
+
+      - name: Apply Certbot
+        command: certbot --nginx -d {{ inventory_hostname }}

@@ -14,10 +14,8 @@
     {# Websockets #}
     <script language="javascript">
 
-        var ws_url =
-            window.location.protocol == 'https:' ? 'wss:/' : 'ws://' +
-            window.location.host +
-            '/ws/sinewave/';
+        var prefix = (window.location.protocol == 'https:') ? 'wss:/' : 'ws://';
+        var ws_url = prefix + window.location.host + '/ws/sinewave/';
 
         var sinewaveSocket = new ReconnectingWebSocket(ws_url);
         //var sinewaveSocket = new WebSocket(ws_url);

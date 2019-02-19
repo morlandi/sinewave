@@ -2,4 +2,4 @@
 production
 
 [production]
-sinewave.brainstorm.it          username=sinewave       standalone_host=True
+sinewave.brainstorm.it          username=sinewave       standalone_host=False
