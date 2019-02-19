@@ -3,3 +3,4 @@ nickname: production
 version: master
 apt_update_cache: False
 standalone_host: False
+use_ssl: False
