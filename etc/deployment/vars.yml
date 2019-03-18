@@ -33,10 +33,10 @@ project:
     logto: "{{home}}/logs"
 
     management_commands:
-        -
-            - collectstatic
+        - collectstatic
 
     supervised_services:
-        -
-            - "{{project_instance}}_asgi_server"
-            - "{{project_instance}}_publisher"
+        - "{{project_instance}}_asgi_server"
+        - "{{project_instance}}_publisher"
+        - "{{project_instance}}_listen_and_broadcast"
+

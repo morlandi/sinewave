@@ -114,6 +114,14 @@
             src: deployment/setenv.bash
             dest: "{{project.root}}"
 
+      - name: Copy supervised services script
+        become: true
+        become_user: "{{username}}"
+        template:
+            mode: 0744
+            src: deployment/sservicesctl.py
+            dest: "{{project.root}}"
+
       - name: Check if virtualenv exists
         stat:
             path: "{{project.virtualenv}}/bin/python3"
