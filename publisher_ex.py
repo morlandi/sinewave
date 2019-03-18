@@ -6,6 +6,7 @@ import redis
 import signal
 import sys
 import time
+import json
 
 #
 #    NOTE FOR REDIS CONNECTION
@@ -28,6 +29,7 @@ def main():
     parser.add_argument('-r', '--redis-url', help='Example: "redis://[:password@]127.0.0.1:6379/0"')
     parser.add_argument('-c', '--channel', default='sinewave')
     parser.add_argument('-s', '--sleep_time', type=int, default=100, help="expressed in [ms]; default = 100")
+    parser.add_argument('-j', '--json', action='store_true', default=False, help="Send rich data (value + timestamp)")
     args = parser.parse_args()
 
     # Retrieve redis_url and channel for connection
@@ -44,7 +46,17 @@ def main():
             row = 'X' * value
             print('\x1b[1;36;40m' + row + '\x1b[0m')
 
-            connection.publish(channel, row)
+            if not args.json:
+                connection.publish(channel, row)
+            else:
+                connection.publish(channel, json.dumps({
+                    'timestamp': time.time(),
+                    'values': [
+                        value,
+                        20 + int(20 * math.sin(n / 2)),
+                        10 + int(10 * math.sin(n / 1)),
+                    ],
+                }))
 
             n += 1
 
