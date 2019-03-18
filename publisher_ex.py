@@ -21,21 +21,20 @@ import time
 #
 
 
-def connect(redis_url):
-    while True:
-        print('Trying to connect to redis at "%s" ...' % redis_url)
-        try:
-            connection = redis.StrictRedis.from_url(redis_url)
-            connection.ping()
-        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
-            time.sleep(1)
-        else:
-            break
-    print('Connected to redis at "%s".' % redis_url)
-    return connection
+def main():
 
+    # Parse arguments
+    parser = argparse.ArgumentParser(description='Publish a sinewave on specified redis channel')
+    parser.add_argument('-r', '--redis-url', help='Example: "redis://[:password@]127.0.0.1:6379/0"')
+    parser.add_argument('-c', '--channel', default='sinewave')
+    parser.add_argument('-s', '--sleep_time', type=int, default=100, help="expressed in [ms]; default = 100")
+    args = parser.parse_args()
 
-def loop(dt, redis_url, channel):
+    # Retrieve redis_url and channel for connection
+    redis_url = args.redis_url if args.redis_url else os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    channel = args.channel
+    dt = float(args.sleep_time) / 1000.0
+
     n = 0
     connection = connect(redis_url)
     while True:
@@ -59,22 +58,18 @@ def loop(dt, redis_url, channel):
             time.sleep(dt)
 
 
-def main():
-
-    # Parse arguments
-    parser = argparse.ArgumentParser(description='Publish a sinewave on specified redis channel')
-    parser.add_argument('-r', '--redis-url', help='Example: "redis://[:password@]127.0.0.1:6379/0"')
-    parser.add_argument('-c', '--channel', default='sinewave')
-    parser.add_argument('-s', '--sleep_time', type=int, default=100, help="expressed in [ms]; default = 10")
-    args = parser.parse_args()
-
-    # Retrieve redis_url for connection
-    if args.redis_url:
-        redis_url = args.redis_url
-    else:
-        redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-
-    loop(float(args.sleep_time) / 1000.0, redis_url, args.channel)
+def connect(redis_url):
+    while True:
+        print('Trying to connect to redis at "%s" ...' % redis_url)
+        try:
+            connection = redis.StrictRedis.from_url(redis_url, decode_responses=True)
+            connection.ping()
+        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
+            time.sleep(1)
+        else:
+            break
+    print('Connected to redis at "%s".' % redis_url)
+    return connection
 
 
 if __name__ == "__main__":

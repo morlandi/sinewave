@@ -153,6 +153,8 @@ CHANNEL_LAYERS = {
     },
 }
 
+SINEWAVE_CHANNEL_NAME = 'sinewave'
+
 try:
     from .local_settings import *
     print('Using local settings from file "local_settings.py"')

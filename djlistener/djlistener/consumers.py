@@ -4,6 +4,7 @@ import datetime
 import random
 import math
 import time
+from django.conf import settings
 from channels.consumer import AsyncConsumer
 from channels.consumer import SyncConsumer
 from .utils import trace
@@ -16,7 +17,7 @@ class SinewaveAsyncConsumer(AsyncConsumer):
 
         # Join monitoring group
         await self.channel_layer.group_add(
-            'sinewave',
+            settings.SINEWAVE_CHANNEL_NAME,
             self.channel_name
         )
 
@@ -32,7 +33,7 @@ class SinewaveAsyncConsumer(AsyncConsumer):
 
         # Leave monitoring group
         await self.channel_layer.group_discard(
-            'sinewave',
+            settings.SINEWAVE_CHANNEL_NAME,
             self.channel_name
         )
 

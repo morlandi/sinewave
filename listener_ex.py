@@ -7,14 +7,29 @@ import sys
 import time
 
 
-def receive(connection, channel):
+def main():
 
-    pubsub = connection.pubsub()
-    pubsub.subscribe(channel)
+    # Parse arguments
+    parser = argparse.ArgumentParser(description='Receive whatever is published on specified redis channel')
+    parser.add_argument('-r', '--redis-url', help='Example: "redis://[:password@]127.0.0.1:6379/0"')
+    parser.add_argument('-c', '--channel', default='sinewave')
+    args = parser.parse_args()
 
-    for item in pubsub.listen():
-        if item['type'] == 'message':
-            print(item['data'])
+    # Retrieve redis_url for connection
+    redis_url = args.redis_url if args.redis_url else os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    channel = args.channel
+    print('Listening to channel "%s" at "%s" ...' % (channel, redis_url))
+
+    # Listen for any message from specified channel§
+    while True:
+        try:
+            connection = connect(redis_url)
+            receive(connection, channel)
+        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
+            print('Lost connections to redis.')
+        except Exception as e:
+            print(str(e))
+            time.sleep(1)
 
 
 def connect(redis_url):
@@ -32,31 +47,13 @@ def connect(redis_url):
     return connection
 
 
-def main():
+def receive(connection, channel):
 
-    # Parse arguments
-    parser = argparse.ArgumentParser(description='Receive whatever is published on specified redis channel')
-    parser.add_argument('-r', '--redis-url', help='Example: "redis://[:password@]127.0.0.1:6379/0"')
-    parser.add_argument('-c', '--channel', default='sinewave')
-    args = parser.parse_args()
+    pubsub = connection.pubsub(ignore_subscribe_messages=True)
+    pubsub.subscribe(channel)
 
-    # Retrieve redis_url for connection
-    if args.redis_url:
-        redis_url = args.redis_url
-    else:
-        redis_url = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-    print('Listening to "%s" ...' % redis_url)
-
-    # Listen for any message from specified channel§
-    while True:
-        try:
-            connection = connect(redis_url)
-            receive(connection, args.channel)
-        except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
-            print('Lost connections to redis.')
-        except Exception as e:
-            print(str(e))
-            time.sleep(1)
+    for message in pubsub.listen():
+        print(message['data'])
 
 
 if __name__ == "__main__":
