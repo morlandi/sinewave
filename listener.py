@@ -15,23 +15,24 @@ def main():
     pubsub = connection.pubsub(ignore_subscribe_messages=False)
     pubsub.subscribe(channel)
 
-    # >>> pubsub.subscribe('my-first-channel', 'my-second-channel', ...)
-    # >>> pubsub.psubscribe('my-*', ...)
+    #>>> pubsub.subscribe('my-first-channel', 'my-second-channel', ...)
+    #>>> pubsub.psubscribe('my-*', ...)
 
     # listen() is a generator that blocks until a message is available.
     # Use it if your application doesn't need to do anything else but receive
     # and act on messages received from redis
 
-    for message in pubsub.listen():
-        print(message)
+    # for message in pubsub.listen():
+    #     print(message)
 
     # for message in pubsub.listen():
     #     if message['type'] == 'message':
     #         print(message['data'])
 
     # # or pass ignore_subscribe_messages=True to connection.pubsub()
-    # for message in pubsub.listen():
-    #     print(message['data'])
+    for message in pubsub.listen():
+        #print(message)
+        print(message['data'])
 
 
 if __name__ == "__main__":

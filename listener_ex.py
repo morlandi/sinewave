@@ -21,12 +21,13 @@ def main():
     print('Listening to channel "%s" at "%s" ...' % (channel, redis_url))
 
     # Listen for any message from specified channel§
+    connection = connect(redis_url)
     while True:
         try:
-            connection = connect(redis_url)
             receive(connection, channel)
         except (redis.exceptions.ConnectionError, redis.exceptions.ResponseError):
             print('Lost connections to redis.')
+            connection = connect(redis_url)
         except Exception as e:
             print(str(e))
             time.sleep(1)

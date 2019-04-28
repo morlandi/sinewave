@@ -13,8 +13,9 @@ def main():
     connection = redis.StrictRedis.from_url(redis_url, decode_responses=True)
 
     pubsub = connection.pubsub()
-    #pubsub.subscribe(channel)
-    pubsub.subscribe(**{channel: on_new_message})
+    pubsub.subscribe(channel)
+    #pubsub.subscribe(sinewave=on_new_message)
+    #pubsub.subscribe(**{channel: on_new_message})
 
     # The third option runs an event loop in a separate thread.
     # pubsub.run_in_thread() creates a new thread and starts the event loop.

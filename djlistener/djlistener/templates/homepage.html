@@ -2,7 +2,26 @@
 
 
 {% block content %}
-    <div style="max-width: 800px;">
+
+    <style>
+        body {
+            background-color: #efefef;
+            padding: 4%;
+        }
+
+        #chart1 {
+            max-width: 800px;
+            background-color: white;
+            margin: 0 auto;
+            padding: 30px;
+
+            border: 1px solid #666;
+            border-radius: 10px;
+            box-shadow: 5px 5px 10px #999;
+        }
+    </style>
+
+    <div style="">
         <canvas id="chart1" height="150"></canvas>
     </div>
 {% endblock content %}
@@ -17,8 +36,8 @@
         var prefix = (window.location.protocol == 'https:') ? 'wss:/' : 'ws://';
         var ws_url = prefix + window.location.host + '/ws/sinewave/';
 
-        var sinewaveSocket = new ReconnectingWebSocket(ws_url);
-        //var sinewaveSocket = new WebSocket(ws_url);
+        //var sinewaveSocket = new ReconnectingWebSocket(ws_url);
+        var sinewaveSocket = new WebSocket(ws_url);
 
         sinewaveSocket.onopen = function(event) {
             console.log('sinewaveSocket.onopen()', event);
@@ -125,11 +144,16 @@
         // your event listener code - assuming the event object has the timestamp and value properties
         // See: https://github.com/nagix/chartjs-plugin-streaming#push-model-listening-based
         function onChartReceive(event) {
+
+            var timestamp = new Date(event.timestamp * 1000).toISOString();
+            console.log('timestamp: %o', timestamp);
+
             // append the new data to the existing chart data
             if (chart1) {
                 chart1.data.datasets.forEach(function(dataset, index) {
                     dataset.data.push({
-                        x: event.timestamp,
+                        //x: event.timestamp,
+                        x: timestamp,
                         y: event.values[index]
                     });
                 });

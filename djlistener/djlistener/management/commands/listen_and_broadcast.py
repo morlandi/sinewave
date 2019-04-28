@@ -88,11 +88,12 @@ class Command(BaseCommand):
 
     def on_data_received(self, channel, data):
         self.logger.debug('data received from channel "%s"' % channel)
-        self.logger.info(data)
+        self.logger.debug(data)
 
         # Broadcast process message to subscribers
         channel_layer = channels.layers.get_channel_layer()
         group = channel
+        self.logger.info('Send "%s" to group "%s"' % (data, group))
         async_to_sync(channel_layer.group_send)(
             group, {
                 "type": 'data_received',

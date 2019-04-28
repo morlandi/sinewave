@@ -47,8 +47,10 @@ def main():
             print('\x1b[1;36;40m' + row + '\x1b[0m')
 
             if not args.json:
+                # Examples: 'XXXXXXXX'
                 connection.publish(channel, row)
             else:
+                # Example: '{"timestamp": 1554441334.941386, "values": [55, 38, 3]}'
                 connection.publish(channel, json.dumps({
                     'timestamp': time.time(),
                     'values': [
