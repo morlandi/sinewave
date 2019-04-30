@@ -10,10 +10,6 @@ Demo site:
 
 [https://sinewave.brainstorm.it](https://sinewave.brainstorm.it)
 
-Video:
-
-[![PubSubWithRedisAndPython](https://i.vimeocdn.com/video/738556705_640.webp)](https://player.vimeo.com/video/300250331 "PubSubWithRedisAndPython")
-
 Screenshot:
 
 ![screenshot](screenshot.png)
