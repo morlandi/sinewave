@@ -6,14 +6,17 @@ Learn PUB/SUB with fun.
 
 Redis PUB/SUB example, adapted from [Redis on Windows: Getting Started](https://channel9.msdn.com/Blogs/Interoperability/Redis-on-Windows-Getting-Started)
 
-video:
+Demo site:
+
+[https://sinewave.brainstorm.it](https://sinewave.brainstorm.it)
+
+Video:
 
 [![PubSubWithRedisAndPython](https://i.vimeocdn.com/video/738556705_640.webp)](https://player.vimeo.com/video/300250331 "PubSubWithRedisAndPython")
 
-screenshot:
+Screenshot:
 
 ![screenshot](screenshot.png)
-
 
 
 ## Introduzione
