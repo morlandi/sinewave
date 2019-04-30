@@ -16,7 +16,7 @@ Screenshot:
 
 Slides per PyCon Italia 2019 (3/5/2019):
 
-![etc/slides/2019-05-03_PyconItalia2019_sinewave.pdf](etc/slides/2019-05-03_PyconItalia2019_sinewave.pdf)
+[etc/slides/2019-05-03_PyconItalia2019_sinewave.pdf](etc/slides/2019-05-03_PyconItalia2019_sinewave.pdf)
 
 ## Introduzione
 
