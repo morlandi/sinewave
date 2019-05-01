@@ -1,4 +1,4 @@
 django==2.1.5
 channels==2.1.6
 channels-redis==2.3.3
-redis==3.0.1
+redis==3.2.1
