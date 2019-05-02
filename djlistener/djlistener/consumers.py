@@ -14,10 +14,11 @@ from .utils import trace
 class SinewaveSyncConsumer(SyncConsumer):
 
     def websocket_connect(self, event):
-        trace('websocket_connect()', event)
+        trace('websocket_connect()', event, self.channel_name)
         self.send({
             'type': 'websocket.accept'
         })
+
         # Join monitoring group
         trace('Socket "%s" joins group "%s"' % (self.channel_name, settings.SINEWAVE_CHANNEL_NAME))
         async_to_sync(self.channel_layer.group_add)(

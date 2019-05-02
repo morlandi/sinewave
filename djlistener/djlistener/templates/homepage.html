@@ -9,10 +9,19 @@
             padding: 4%;
         }
 
-        #chart1 {
+        #wrapper {
             max-width: 800px;
-            background-color: white;
             margin: 0 auto;
+        }
+
+        #log {
+            padding: 20px;
+            font-family: tahoma;
+            color: #666;
+        }
+
+        #chart1 {
+            background-color: white;
             padding: 30px;
 
             border: 1px solid #666;
@@ -21,8 +30,13 @@
         }
     </style>
 
-    <div style="">
+    <div id="wrapper">
         <canvas id="chart1" height="150"></canvas>
+        <div id="log">
+            counter: <span id="counter">0</span>
+            -
+            last value: <span id="last_value"></span>
+        </div>
     </div>
 {% endblock content %}
 
@@ -36,8 +50,8 @@
         var prefix = (window.location.protocol == 'https:') ? 'wss:/' : 'ws://';
         var ws_url = prefix + window.location.host + '/ws/sinewave/';
 
-        //var sinewaveSocket = new ReconnectingWebSocket(ws_url);
-        var sinewaveSocket = new WebSocket(ws_url);
+        var sinewaveSocket = new ReconnectingWebSocket(ws_url);
+        //var sinewaveSocket = new WebSocket(ws_url);
 
         sinewaveSocket.onopen = function(event) {
             console.log('sinewaveSocket.onopen()', event);
@@ -47,6 +61,7 @@
             console.log('sinewaveSocket.onmessage()', event);
             var data = JSON.parse(event.data);
             console.log('data', data);
+            log(event.data);
             onChartReceive(data);
         };
 
@@ -64,6 +79,12 @@
     <script language="javascript">
 
         var chart1 = null;
+
+        function log(data) {
+            var counter = parseInt($('#counter').text());
+            $('#counter').text(counter + 1);
+            $('#last_value').text(event.data);
+        }
 
         function build_chart(canvas, configuration) {
             var ctx = $(canvas).get(0).getContext("2d");

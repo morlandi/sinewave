@@ -11,8 +11,8 @@ def main():
     redis_url = 'redis://localhost:6379/0'
     channel = 'sinewave'
 
-    connection = redis.StrictRedis.from_url(redis_url, decode_responses=True)
     #connection = redis.Redis(host='localhost', port=6379, db=0)
+    connection = redis.StrictRedis.from_url(redis_url, decode_responses=True)
 
     n = 1
     while True:
