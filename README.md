@@ -6,7 +6,7 @@ PyCon Italia 2019: Learn PUB/SUB with fun
 
 Video:
 
-[![Internet delle cose con Redis e django-channels](etc/slides/images/1.png)](https://www.youtube.com/watch?v=xxbxVHi_vfU "Internet delle cose con Redis e django-channels")
+[![Internet delle cose con Redis e django-channels](etc/slides/images/0.png)](https://www.youtube.com/watch?v=xxbxVHi_vfU "Internet delle cose con Redis e django-channels")
 
 Demo site: [https://sinewave.brainstorm.it](https://sinewave.brainstorm.it)
 
