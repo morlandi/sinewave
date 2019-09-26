@@ -47,11 +47,11 @@ The software technologies selected for this purpose are: Python, Redis and Djang
 
 ## Videos
 
-PyCon UK 2019: Real-time data acquisition, from Arduino to the web, using PubSub with Redis, Django and other friends
+**PyCon UK 2019**: Real-time data acquisition, from Arduino to the web, using PubSub with Redis, Django and other friends
 
 [![Real-time data acquisition, from Arduino to the web, using PubSub with Redis, Django and other friends](etc/slides/images/0_uk.png)](https://www.youtube.com/watch?v=V8VAQS7xais "Real-time data acquisition, from Arduino to the web, using PubSub with Redis, Django and other friends")
 
-PyCon Italia 2019: Internet delle cose con Redis e django-channels
+**PyCon Italia 2019**: Internet delle cose con Redis e django-channels
 
 [![Internet delle cose con Redis e django-channels](etc/slides/images/0.png)](https://www.youtube.com/watch?v=xxbxVHi_vfU "Internet delle cose con Redis e django-channels")
 
@@ -63,7 +63,7 @@ PyCon Italia 2019: Internet delle cose con Redis e django-channels
 
 ## Slides
 
-[Download slides as PDF](etc/slides/2019-05-03_PyconItalia2019_sinewave.pdf)
+[Download slides as PDF](https://github.com/morlandi/sinewave/raw/master/etc/slides/2019-05-03_PyconItalia2019_sinewave.pdf)
 
 ![](etc/slides/images/1.png)
 
