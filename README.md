@@ -4,14 +4,14 @@ Sinewave
 
 # Real-time data acquisition, from Arduino to the web, using PubSub with Redis, Django and other friends
 
-### Abstract
+## Abstract
 
 I'll apply PubSub to collect data in real-time from TCP-enabled peripherals,
 like Arduino or others, and deliver them to a data server for storage, processing,
 and broadcasting to remote clients (typically smartphones or tablets) for real-time
 monitoring and inspection.
 
-### Content
+## Content
 
 We all know and love our fancy web framework, but when it comes to collecting data
 in real-time from remote devices, we have to take a step in a new direction.
@@ -34,7 +34,7 @@ extracting useful information and insights.
 to the user in a comprehensible, usable form; we’ll assume our users are working
 in the field with smartphones or tablets.
 
-### Target audience
+## Target audience
 
 I will assume that my audience has a basic understanding of Python and Django,
 and build on that to introduce tools (Redis, Arduino) and techniques
