@@ -82,3 +82,13 @@ The software technologies selected for this purpose are: Python, Redis and Djang
 ![](etc/slides/images/6c.png)
 
 ![](etc/slides/images/7b.png)
+
+## References
+
+- [Redis: an open source (BSD licensed), in-memory data structure store, used as a database, cache and message broker](https://redis.io)
+- [Django Channels: Developer-friendly asynchrony for Django](https://github.com/django/channels)
+- [redis-py: The Python interface to the Redis key-value store.](https://github.com/andymccurdy/redis-py)
+- [Redis on Windows: Getting Started](https://channel9.msdn.com/Blogs/Interoperability/Redis-on-Windows-Getting-Started)
+- [Redis for ESP8266 (Arduino Library)](https://www.arduinolibraries.info/libraries/redis-for-esp8266)
+- [Can I connect directly to a Redis server from JavaScript running in a browser?](https://stackoverflow.com/questions/5759120/can-i-connect-directly-to-a-redis-server-from-javascript-running-in-a-browser)
+
