@@ -1,4 +1,4 @@
-django==2.1.5
+django==2.2.10
 channels==2.1.6
 channels-redis==2.3.3
 redis==3.2.1
