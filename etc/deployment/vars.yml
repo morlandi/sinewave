@@ -29,14 +29,15 @@ project:
     virtualenv: "{{home}}/python"
     pythonpath: "{{home}}/python/bin"
     static_root: "{{home}}/public/static"
-    socketpath: "{{home}}/run"
+    #socketpath: "{{home}}/run"
+    unixsocket_prefix: "/run/shm/{{project_instance}}_"
     logto: "{{home}}/logs"
 
     management_commands:
         - collectstatic
 
     supervised_services:
-        - "{{project_instance}}_asgi_server"
+        - "{{project_instance}}_server"
         - "{{project_instance}}_publisher"
         - "{{project_instance}}_listen_and_broadcast"
 
