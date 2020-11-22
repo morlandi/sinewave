@@ -3,6 +3,7 @@ home: '/home/{{username}}'
 project_name: "djlistener"
 project_instance: "{{username}}"
 locale: en_US.UTF-8
+unixsocket_prefix: "/run/shm/{{project_instance}}_"
 
 #
 # Provisioning variables
@@ -30,7 +31,6 @@ project:
     pythonpath: "{{home}}/python/bin"
     static_root: "{{home}}/public/static"
     #socketpath: "{{home}}/run"
-    unixsocket_prefix: "/run/shm/{{project_instance}}_"
     logto: "{{home}}/logs"
 
     management_commands:
