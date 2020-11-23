@@ -4,6 +4,7 @@ project_name: "djlistener"
 project_instance: "{{username}}"
 locale: en_US.UTF-8
 unixsocket_prefix: "/run/shm/{{project_instance}}_"
+#unixsocket_prefix: "{{home}}/run/"
 
 #
 # Provisioning variables

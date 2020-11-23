@@ -60,7 +60,7 @@
             group: "{{usergroup}}"
         with_items:
           - "{{home}}/logs"
-          #- "{{home}}/run"
+          - "{{home}}/run"
           - "{{home}}/public"
           - "{{home}}/public/static"
 
