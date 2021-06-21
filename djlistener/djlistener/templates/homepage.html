@@ -50,8 +50,8 @@
         var prefix = (window.location.protocol == 'https:') ? 'wss:/' : 'ws://';
         var ws_url = prefix + window.location.host + '/ws/sinewave/';
 
-        var sinewaveSocket = new ReconnectingWebSocket(ws_url);
-        //var sinewaveSocket = new WebSocket(ws_url);
+        //var sinewaveSocket = new ReconnectingWebSocket(ws_url);
+        var sinewaveSocket = new WebSocket(ws_url);
 
         sinewaveSocket.onopen = function(event) {
             console.log('sinewaveSocket.onopen()', event);

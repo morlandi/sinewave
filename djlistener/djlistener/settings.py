@@ -2,7 +2,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = '171$o7z&zwqhet96y-6#mhjytqn3=-nv%s!^b13jam1a^)y@g#'
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = []
 
 
@@ -17,7 +17,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'djlistener.urls'
-ASGI_APPLICATION = "djlistener.routing.application"
+ASGI_APPLICATION = "djlistener.asgi.application"
 
 TEMPLATES = [
     {
