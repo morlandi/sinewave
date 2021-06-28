@@ -43,22 +43,22 @@ def main():
 
         try:
             value = 30 + int(30 * math.sin(n / 4))
-            row = 'X' * value
-            print('\x1b[1;36;40m' + row + '\x1b[0m')
 
             if not args.json:
                 # Examples: 'XXXXXXXX'
-                connection.publish(channel, row)
+                data = 'X' * value
             else:
                 # Example: '{"timestamp": 1554441334.941386, "values": [55, 38, 3]}'
-                connection.publish(channel, json.dumps({
+                data = json.dumps({
                     'timestamp': time.time(),
                     'values': [
                         value,
                         20 + int(20 * math.sin(n / 2)),
                         10 + int(10 * math.sin(n / 1)),
                     ],
-                }))
+                })
+            connection.publish(channel, data)
+            print('\x1b[1;36;40m' + data + '\x1b[0m')
 
             n += 1
 
